@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { BodyFixView } from 'bodyfix-view';
-import 'bodyfix-view/dist/index.css';
+import { BodyPixView } from 'body-pix-react-render';
+import 'body-pix-react-render/dist/index.css';
 
-//options
+//default options
 const default_options = {
 	loadModelOptions: {
 		architecture: 'MobileNetV1',
@@ -44,7 +44,7 @@ const App = () => {
     <button style={{ marginRight: "10px" }} onClick={() => { setMask("none") }}>Mask (None)</button>
     <button style={{ marginRight: "10px" }} onClick={() => { setVisible(!visible) }}>{visible ? "Hide View" : "Show View"}</button>
     <br /> <br />
-    <BodyFixView
+    <BodyPixView
       start={start}
       options={options}
       onEvent={onEvent}

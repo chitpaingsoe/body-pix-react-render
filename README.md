@@ -1,21 +1,21 @@
-# bodyfix-view
+# body-pix-react-render
 
-> Custom Bodyfix view
+> Custom Body-Pix React Render
 
-[![NPM](https://img.shields.io/npm/v/bodyfix-view.svg)](https://www.npmjs.com/package/bodyfix-view) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/body-pix-react-render.svg)](https://www.npmjs.com/package/body-pix-react-render) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
 
 ```bash
-npm install --save bodyfix-view
+npm install --save body-pix-react-render
 ```
 
 ## Usage
 
 ```jsx
 import React, { useState } from 'react';
-import { BodyFixView } from 'bodyfix-view';
-import 'bodyfix-view/dist/index.css';
+import { BodyPixView } from 'body-pix-react-render';
+import 'body-pix-react-render/dist/index.css';
 
 //default options
 const default_options = {
@@ -59,7 +59,7 @@ const App = () => {
     <button style={{ marginRight: "10px" }} onClick={() => { setMask("none") }}>Mask (None)</button>
     <button style={{ marginRight: "10px" }} onClick={() => { setVisible(!visible) }}>{visible ? "Hide View" : "Show View"}</button>
     <br /> <br />
-    <BodyFixView
+    <BodyPixView
       start={start}
       options={options}
       onEvent={onEvent}
