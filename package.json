@@ -4,7 +4,7 @@
   "description": "Custom Bodyfix view",
   "author": "Chit Paing Soe",
   "license": "MIT",
-  "repository": "https://github.com/chitpaingsoe/bodyfix-view.git",
+  "repository": "https://github.com/chitpaingsoe/body-pix-react-render.git",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
