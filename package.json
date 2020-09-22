@@ -1,10 +1,14 @@
 {
   "name": "body-pix-react-render",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "private": false,
   "description": "Body-Pix React Render",
   "author": "Chit Paing Soe",
   "license": "MIT",
-  "repository": "https://github.com/chitpaingsoe/body-pix-react-render.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chitpaingsoe/body-pix-react-render.git"
+  },
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
@@ -53,5 +57,18 @@
   "dependencies": {
     "@tensorflow-models/body-pix": "^2.0.5",
     "@tensorflow/tfjs": "^2.4.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/chitpaingsoe/body-pix-react-render/issues"
+  },
+  "homepage": "https://github.com/chitpaingsoe/body-pix-react-render#readme",
+  "directories": {
+    "example": "example"
+  },
+  "keywords": [
+    "body-pix",
+    "react",
+    "webrtc",
+    "tfjs"
+  ]
 }
