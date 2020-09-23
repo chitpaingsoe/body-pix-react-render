@@ -1,18 +1,3 @@
-# body-pix-react-render
-
-> Custom Body-Pix React Render
-
-[![NPM](https://img.shields.io/npm/v/body-pix-react-render.svg)](https://www.npmjs.com/package/body-pix-react-render) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
-## Install
-
-```bash
-npm install --save body-pix-react-render
-```
-
-## Usage
-
-```jsx
 import React, { useState } from 'react';
 import { BodyPixReactView } from 'body-pix-react-render';
 import 'body-pix-react-render/dist/index.css';
@@ -50,7 +35,7 @@ const default_option = {
 };
 
 
-const App = () => {
+const App2 = () => {
     const [visible, setVisible] = useState(false);
     const [start, setStart] = useState(false);
 
@@ -84,9 +69,4 @@ const App = () => {
 
     );
 }
-export default App;
-```
-
-## License
-
-MIT © [Chit Paing Soe](https://github.com/chitpaingsoe)
+export default App2;
