@@ -41,7 +41,7 @@ const default_option = {
         segmentationThreshold: 0.7,
         effect: 'mask',
         maskBackground: true,
-        opacity: 0.7,
+        opacity: 0.98,
         backgroundBlurAmount: 3,
         maskBlurAmount: 0,
         edgeBlurAmount: 3

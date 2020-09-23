@@ -41,6 +41,7 @@ const App2 = () => {
 
     const options = {
         //your custom options
+        //maskType:  "person",
         showFps: false,
         mediaOptions: {
             audio: false

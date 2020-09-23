@@ -33,7 +33,7 @@ export default (props) => {
             segmentationThreshold: 0.7,
             effect: 'mask',
             maskBackground: true,
-            opacity: 0.7,
+            opacity: 0.98,
             backgroundBlurAmount: 3,
             maskBlurAmount: 0,
             edgeBlurAmount: 3
@@ -106,7 +106,7 @@ export default (props) => {
     const options = props.options || {};
     const onEvent = props.onEvent || null;
     const start = props.start || false;
-    let maskType = "room";
+    let maskType = typeof(props.options.maskType) === "string" ? props.options.maskType : "room";
     const visible = props.visible || false;
     let guiState = addOptions(options);
 
