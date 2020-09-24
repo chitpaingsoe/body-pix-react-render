@@ -911,7 +911,7 @@ export default (props) => {
         </div>
         <div id='main' style={{ display: 'none' }}>
             <video id="video" playsInline style={{ display: 'none' }} hidden></video>
-            <canvas id="output" />
+            <canvas id="output" hidden/>
         </div>
         <ul id="colors" style={{ display: 'none' }}></ul>
 
