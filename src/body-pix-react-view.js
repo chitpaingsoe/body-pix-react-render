@@ -123,7 +123,9 @@ export default (props) => {
 
                 await bindPage();
                 const canvas = document.getElementById('output');
-                const canvasStream = canvas.captureStream();
+                //set fps
+                console.log("Set canvas stream fps 30.")
+                const canvasStream = canvas.captureStream(30);
                 if (onEvent) {
                     if (!state.net) {
                         onEvent({
