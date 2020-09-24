@@ -113,12 +113,6 @@ export default (props) => {
     const [running, setRunning] = useState(false);
 
 
-
-    useEffect(() => {
-        //guiState.showFps = false;
-        //addOptions();
-    }, [])
-
     useEffect(() => {
         if (start && !running) {
 
@@ -269,10 +263,12 @@ export default (props) => {
 
         stopExistingVideoCapture();
 
-        const mediaOptions = options.mediaOptions || {};
+        const mediaOptions = options.mediaOptions ?? {};
         let inputVideoOptions = mediaOptions.video ?? null;
         let inputAudioOptions = mediaOptions.audio ?? true;
         const videoConstraints = inputVideoOptions ?? await getConstraints(cameraLabel);
+
+        console.log("MeidaOptions- video: ", videoConstraints , " , audio: ",inputAudioOptions)
 
         const stream = await navigator.mediaDevices.getUserMedia(
             { 'audio': inputAudioOptions, 'video': videoConstraints });
@@ -311,7 +307,7 @@ export default (props) => {
     const defaultResNetStride = 16;
     const defaultResNetInternalResolution = 'low';
 
-
+    
 
     function toCameraOptions(cameras) {
         const result = { default: null };
@@ -869,13 +865,21 @@ export default (props) => {
     }
     const hidePanel = (type) => {
         const ui = document.getElementsByClassName("dg main a");
+        const fps_ui = document.getElementById("showfps");
 
         if (type) {
 
             if (ui.length > 0) {
                 const dat_ui = ui[0];
                 dat_ui.style.display = "block";
+                dat_ui.style.zIndex = 10000;
                 dat_ui.hidden = false;
+            }
+            //show fps
+            
+            if(fps_ui !== null){
+                fps_ui.style.display="block";
+                fps_ui.hidden = false;
             }
 
 
@@ -884,13 +888,18 @@ export default (props) => {
             if (ui.length > 0) {
                 const dat_ui = ui[0];
                 dat_ui.style.display = "none";
+                dat_ui.style.zIndex = 10000;
                 dat_ui.hidden = true;
+            }
+            if(fps_ui !== null){
+                fps_ui.style.display="none";
+                fps_ui.hidden = true;
             }
         }
 
     }
 
-    return (<div hidden={visible ? false : true}>
+    return (<div hidden>
         <div id="stats"></div>
         <div id="info" style={{ display: 'none' }}>
         </div>
@@ -901,8 +910,8 @@ export default (props) => {
             <div className="sk-spinner sk-spinner-pulse"></div>
         </div>
         <div id='main' style={{ display: 'none' }}>
-            <video id="video" playsInline style={{ display: 'none' }} hidden={visible ? false : true}></video>
-            <canvas id="output" hidden={visible ? false : true} />
+            <video id="video" playsInline style={{ display: 'none' }} hidden></video>
+            <canvas id="output" />
         </div>
         <ul id="colors" style={{ display: 'none' }}></ul>
 

@@ -37,14 +37,15 @@ const default_option = {
 
 const App2 = () => {
     const [visible, setVisible] = useState(false);
-    const [start, setStart] = useState(false);
+    const [start, setStart] = useState(true);
 
     const options = {
         //your custom options
         //maskType:  "person",
-        showFps: false,
+        showFps: true,
         mediaOptions: {
-            audio: false
+           // audio: false,
+            //video: {width: 640,height: 480}
         }
     }
 
@@ -58,6 +59,7 @@ const App2 = () => {
         }
     }
     return (<div>
+        <div style={{height: 100,backgroundColor:"#000"}}></div>
         <button style={{ marginLeft: "100px" }} onClick={() => { setStart(!start) }} disabled={start ? true : false}>Start</button>
         <button style={{ marginLeft: "100px", marginBottom: "100px" }} onClick={() => { setVisible(!visible) }}>{visible ? "Hide View" : "Show View"}</button>
         <br /> <br />

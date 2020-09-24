@@ -32,8 +32,8 @@ const App = () => {
       //your custom options
   }
   const [start, setStart] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [mask, setMask] = useState('person');
+  const [visible, setVisible] = useState(true);
+  const [mask, setMask] = useState('room');
   const onEvent = (event) => {
     console.log(event)
   }

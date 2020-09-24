@@ -7,7 +7,7 @@ const default_options = {
 	loadModelOptions: {
 		architecture: 'MobileNetV1',
 		outputStride: 16,
-		multiplier: 0.75,
+		multiplier: 0.50,
 		quantBytes: 2,
 		algorithm: "person"
 	},
@@ -19,7 +19,7 @@ const default_options = {
 		internalResolution: 'medium',
 		segmentationThreshold: 0.7,
 		maxDetections: 1,
-		scoreThreshold: 0.5,
+		scoreThreshold: 0.6,
 		nmsRadius: 20,
 		estimate: 'segmentation',
 		algorithm: "person"
@@ -38,9 +38,9 @@ export default (props) => {
 	let canvas = document.getElementById('canvas');
 
 
-	const [localStream,setLocalStream] = useState(null);
-	const [canvasStream,setCanvasStream] = useState(null);
-	let maskType =  mask;
+	const [localStream, setLocalStream] = useState(null);
+	const [canvasStream, setCanvasStream] = useState(null);
+	let maskType = mask;
 	let bodyPixNet = null;
 	let animationId = null;
 	let contineuAnimation = false;
@@ -50,7 +50,7 @@ export default (props) => {
 	useEffect(() => {
 		localVideo = document.getElementById('local_video');
 		canvas = document.getElementById('canvas');
-		
+
 
 	}, [])
 
@@ -58,7 +58,7 @@ export default (props) => {
 		if (start === true) {
 			(async function load() {
 				localVideo = document.getElementById('local_video');
-				canvas = document.getElementById('canvas');				
+				canvas = document.getElementById('canvas');
 				await loadModel();
 				await startVideo();
 			})();
@@ -67,15 +67,15 @@ export default (props) => {
 
 		}
 	}, [start])
-	useEffect(()=>{
-		if(localStream){
-			(async function load() {				
+	useEffect(() => {
+		if (localStream) {
+			(async function load() {
 				stopVideo();
 				await loadModel();
 				await startVideo();
 			})();
 		}
-	},[mask])
+	}, [mask])
 
 
 	// ------- bodypix -------
@@ -88,54 +88,62 @@ export default (props) => {
 
 
 	const updateSegment = () => {
-		const segmeteUpdateTime = 10; // ms
-		if (!bodyPixNet) {
-			console.warn('bodyPix net NOT READY');
-			return;
-		}
 
-		const option = addOptions(options.bodyPixOptions, "bodyPix");
-
-		if (maskType === 'none') {
-			bodyPixMaks = null;
-			if (contineuAnimation) {
-				segmentTimerId = setTimeout(updateSegment, segmeteUpdateTime);
+		async function updateSegmentonFrame() {
+			if (!bodyPixNet) {
+				console.warn('bodyPix net NOT READY');
+				return;
 			}
-			return;
-		}
-		
-		bodyPixNet.segmentPerson(localVideo, option)
-			.then(segmentation => {
-				if (maskType === 'room') {
-					const fgColor = { r: 0, g: 0, b: 0, a: 0 };
-					const bgColor = { r: 127, g: 127, b: 127, a: 255 };
-					const personPartImage = bodyPix.toMask(segmentation, fgColor, bgColor);
-					bodyPixMaks = personPartImage;
-				}
-				else if (maskType === 'person') {
-					const fgColor = { r: 127, g: 127, b: 127, a: 255 };
-					const bgColor = { r: 0, g: 0, b: 0, a: 0 };
-					const roomPartImage = bodyPix.toMask(segmentation, fgColor, bgColor);
-					bodyPixMaks = roomPartImage;
-				}
-				else {
-					bodyPixMaks = null;
-				}
 
-				if (contineuAnimation) {
-					segmentTimerId = setTimeout(updateSegment, segmeteUpdateTime);
-				}
-			})
-			.catch(err => {
-				//console.error('segmentPerson ERROR:', err);
-				
-			})
+			const option = addOptions(options.bodyPixOptions, "bodyPix");
+
+
+			bodyPixNet.segmentPerson(localVideo, option)
+				.then(segmentation => {
+					if (maskType === 'room') {
+						const fgColor = { r: 0, g: 0, b: 0, a: 0 };
+						const bgColor = { r: 127, g: 127, b: 127, a: 255 };
+						const personPartImage = bodyPix.toMask(segmentation, fgColor, bgColor);
+						bodyPixMaks = personPartImage;
+					}
+					else if (maskType === 'person') {
+						const fgColor = { r: 127, g: 127, b: 127, a: 255 };
+						const bgColor = { r: 0, g: 0, b: 0, a: 0 };
+						const roomPartImage = bodyPix.toMask(segmentation, fgColor, bgColor);
+						bodyPixMaks = roomPartImage;
+					}
+					else {
+						bodyPixMaks = null;
+					}
+					const opacity = 1.0;
+					let flipHorizontal = false;
+					if (options.bodyPixOptions) {
+						if (typeof (options.bodyPixOptions)) {
+							if ('flipHorizontal' in options.bodyPixOptions) {
+								flipHorizontal = options.bodyPixOptions.flipHorizontal;
+							}
+						}
+					}
+
+					//const maskBlurAmount = 0;
+					const maskBlurAmount = 3;
+					bodyPix.drawMask(
+						canvas, localVideo, bodyPixMaks, opacity, maskBlurAmount,
+						flipHorizontal
+					);
+
+				})
+				.catch(err => {
+					//console.error('segmentPerson ERROR:', err);
+
+				});
+			requestAnimationFrame(updateSegmentonFrame);
+		}
+		updateSegmentonFrame();
 	}
 
 	const startCanvasVideo = () => {
 		writeCanvasString('initalizing BodyPix');
-		contineuAnimation = true;
-		animationId = window.requestAnimationFrame(updateCanvas);
 		setCanvasStream(canvas.captureStream());
 
 		updateSegment();
@@ -154,13 +162,6 @@ export default (props) => {
 
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
-		// 
-
-		contineuAnimation = false;
-		if (segmentTimerId) {
-			clearTimeout(segmentTimerId);
-			segmentTimerId = null;
-		}
 
 		if (canvasStream) {
 			canvasStream.getTracks().forEach(track => {
@@ -171,7 +172,7 @@ export default (props) => {
 		}
 
 	}
-	const stopStreams = () =>{
+	const stopStreams = () => {
 		if (canvasStream) {
 			canvasStream.getTracks().forEach(track => {
 				console.log('stop canvas track:', track);
@@ -188,35 +189,6 @@ export default (props) => {
 		}
 	}
 
-	const updateCanvas = () => {
-		drawCanvas(localVideo);
-		if (contineuAnimation) {
-			animationId = window.requestAnimationFrame(updateCanvas);
-		}
-	}
-
-	const drawCanvas = (srcElement) => {
-		const opacity = 1.0;
-		let flipHorizontal = false;
-		if (options.bodyPixOptions) {
-			if (typeof (options.bodyPixOptions)) {
-				if ('flipHorizontal' in options.bodyPixOptions) {
-					flipHorizontal = options.bodyPixOptions.flipHorizontal;
-				}
-			}
-		}
-
-		//const maskBlurAmount = 0;
-		const maskBlurAmount = 3;
-
-		// Draw the mask image on top of the original image onto a canvas.
-		// The colored part image will be drawn semi-transparent, with an opacity of
-		// 0.7, allowing for the original image to be visible under.
-		bodyPix.drawMask(
-			canvas, srcElement, bodyPixMaks, opacity, maskBlurAmount,
-			flipHorizontal
-		);
-	}
 
 	// -------- user media -----------
 
@@ -251,7 +223,7 @@ export default (props) => {
 	}
 
 	const stopVideo = () => {
-		
+
 		stopCanvasVideo();
 
 		localVideo.pause();
@@ -319,19 +291,19 @@ export default (props) => {
 				return {};
 		}
 	}
-	
+
 	return (
 		<div hidden={visible ? false : true}>
 
 			<div style={{ display: "grid", gridTemplateRows: "1fr", gridTemplateColumns: "170px 170px" }}>
 				<div style={{ gridColumn: 1 }}>
 					local video<br />
-					<video id="local_video" width="640px" height="480px"  hidden={visible ? false : true}
+					<video id="local_video" width="640px" height="480px" hidden={visible ? false : true}
 						style={{ border: "solid black 1px", width: "160px", height: "120px" }}></video>
 				</div>
 				<div style={{ gridColumn: 2 }}>
 					masked video<br />
-					<canvas id="canvas" width="640px" height="480px" style={{ border: "solid 1px black", width: "160px", height: "120px" }}  hidden={visible ? false : true} />
+					<canvas id="canvas" width="640px" height="480px" style={{ border: "solid 1px black", width: "160px", height: "120px" }} hidden={visible ? false : true} />
 				</div>
 			</div>
 
