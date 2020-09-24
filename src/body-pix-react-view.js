@@ -4,7 +4,7 @@ import * as tfjs from '@tensorflow/tfjs';
 import dat from 'dat.gui';
 import Stats from 'stats.js';
 
-import { drawKeypoints, drawSkeleton, toggleLoadingUI, TRY_RESNET_BUTTON_NAME, TRY_RESNET_BUTTON_TEXT, updateTryResNetButtonDatGuiCss } from './demo_utils';
+import { drawKeypoints, drawSkeleton, toggleLoadingUI, TRY_RESNET_BUTTON_NAME, updateTryResNetButtonDatGuiCss } from './demo_utils';
 import * as partColorScales from './part_color_scales';
 
 
@@ -266,9 +266,11 @@ export default (props) => {
 
         const mediaOptions = options.mediaOptions || {};
         let inputVideoOptions = mediaOptions.video || null;
-        let inputAudioOptions = mediaOptions.audio || true;
+        let inputAudioOptions = mediaOptions.audio === undefined || mediaOptions.audio === null ? true 
+                                    : typeof(mediaOptions.audio) === 'boolean' ? mediaOptions.audio : true;
         const videoConstraints = inputVideoOptions  === null ? await getConstraints(cameraLabel) : inputVideoOptions;
 
+        console.log('Given media: ',mediaOptions)
         console.log("MeidaOptions- video: ", videoConstraints , " , audio: ",inputAudioOptions)
 
         const stream = await navigator.mediaDevices.getUserMedia(

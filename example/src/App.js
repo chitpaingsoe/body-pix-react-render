@@ -43,10 +43,10 @@ const App = () => {
         //your custom options
         //maskType:  "person",
         showFps: true,
-        // mediaOptions: {
-        //    // audio: false,
-        //     video: {width: 640,height: 480}
-        // }
+        mediaOptions: {
+            audio: false,
+            video: {width: 640,height: 480}
+        }
     }
 
     const onEvent = (event) => {
