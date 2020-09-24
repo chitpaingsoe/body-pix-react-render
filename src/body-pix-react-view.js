@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as bodyPix from '@tensorflow-models/body-pix';
+import * as tfjs from '@tensorflow/tfjs';
 import dat from 'dat.gui';
 import Stats from 'stats.js';
 
@@ -263,10 +264,10 @@ export default (props) => {
 
         stopExistingVideoCapture();
 
-        const mediaOptions = options.mediaOptions ?? {};
-        let inputVideoOptions = mediaOptions.video ?? null;
-        let inputAudioOptions = mediaOptions.audio ?? true;
-        const videoConstraints = inputVideoOptions ?? await getConstraints(cameraLabel);
+        const mediaOptions = options.mediaOptions || {};
+        let inputVideoOptions = mediaOptions.video || null;
+        let inputAudioOptions = mediaOptions.audio || true;
+        const videoConstraints = inputVideoOptions  === null ? await getConstraints(cameraLabel) : inputVideoOptions;
 
         console.log("MeidaOptions- video: ", videoConstraints , " , audio: ",inputAudioOptions)
 
