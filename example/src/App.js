@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BodyPixReactView } from 'body-pix-react-render';
 import 'body-pix-react-render/dist/index.css';
 
@@ -37,19 +37,29 @@ const default_option = {
 
 const App = () => {
     const [visible, setVisible] = useState(false);
-    const [start, setStart] = useState(true);
+    const [start, setStart] = useState(false);
+    const [options, setOptions]= useState({});
 
-    const options = {
-        //your custom options
-        //maskType:  "person",
-        showFps: true,
-        mediaOptions: {
-            audio: false,
-            video: {width: 640,height: 480}
-        }
-    }
+    useEffect(()=>{
+        (async function load(){
+            const stream = await getStream();
+            setOptions({
+                //your custom options
+                //maskType:  "person",
+                showFps: true,
+                mediaOptions: {
+                    audio: true,
+                    video: {width: 640,height: 480}
+                },
+                customStream: stream
+            })
+            setStart(true)
+           
+        })();
+    },[])
 
     const onEvent = (event) => {
+        console.log(event)
         if (event.event === "READY") {
             let video = document.getElementById("remoteDisplay");
             if (video !== null) {
@@ -58,12 +68,18 @@ const App = () => {
             }
         }
     }
+    async function getStream(){
+        return await navigator.mediaDevices.getUserMedia(
+            { 'audio': true,video: {width: 640,height: 480}});
+    }
     return (<div>
         <div style={{height: 100,backgroundColor:"#000"}}></div>
         <button style={{ marginLeft: "100px" }} onClick={() => { setStart(!start) }} disabled={start ? true : false}>Start</button>
         <button style={{ marginLeft: "100px", marginBottom: "100px" }} onClick={() => { setVisible(!visible) }}>{visible ? "Hide View" : "Show View"}</button>
         <br /> <br />
-        <BodyPixReactView options={options} visible={visible} start={start} onEvent={onEvent} />
+        {
+            start === true ? <BodyPixReactView options={options} visible={visible} start={start} onEvent={onEvent} /> : null
+        }
         <br />
         <div>
             <video id="remoteDisplay" width='480px' height="360px" style={{ border: "1px solid #000" }} />

@@ -47,7 +47,8 @@ export default (props) => {
             blurBodyPartAmount: 3,
             bodyPartEdgeBlurAmount: 3,
         },
-        showFps: !isMobile()
+        showFps: !isMobile(),
+        customStream: null
     };
 
     const addOptions = (options) => {
@@ -123,9 +124,21 @@ export default (props) => {
 
                 await bindPage();
                 const canvas = document.getElementById('output');
-                //set fps
-                console.log("Set canvas stream fps 30.")
-                const canvasStream = canvas.captureStream(30);
+
+                //set fps               
+                console.log("Set canvas stream fps 30.");
+                let canvasStream = canvas.captureStream(30);
+
+                //set audio stream
+                let srcStreamVideo = state.video;
+                if(srcStreamVideo !== null){
+                    const track = srcStreamVideo.srcObject.getAudioTracks()[0];
+                    if(track !== undefined){
+                        console.log("Set Audio Track: ",track)
+                        canvasStream.addTrack(track);
+                    }
+                }
+
                 if (onEvent) {
                     if (!state.net) {
                         onEvent({
@@ -288,9 +301,32 @@ export default (props) => {
         });
     }
 
+    async function setupCustomStream(stream) {
+
+        const videoElement = document.getElementById('video');
+
+        stopExistingVideoCapture();
+
+        console.log("Custom Stream: ", stream)
+
+        videoElement.srcObject = stream;
+
+        return new Promise((resolve) => {
+            videoElement.onloadedmetadata = () => {
+                videoElement.width = videoElement.videoWidth;
+                videoElement.height = videoElement.videoHeight;
+                resolve(videoElement);
+            };
+        });
+    }
+
     async function loadVideo(cameraLabel) {
         try {
-            state.video = await setupCamera(cameraLabel);
+            
+            const customStream = props.options.customStream;
+
+            //check customStream or not 
+            state.video = customStream === undefined ? await setupCamera(cameraLabel): await setupCustomStream(customStream);
         } catch (e) {
             let info = document.getElementById('info');
             info.textContent = 'this browser does not support video capture,' +
