@@ -46,7 +46,8 @@ const default_option = {
         maskBlurAmount: 0,
         edgeBlurAmount: 3
     },
-    showFps: false
+    showFps: false,
+    customStream: null
 };
 
 
